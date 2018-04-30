@@ -8,11 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity  implements ContactListFragment.OnFragmentInteractionListener{
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter vpAdapter;
+    private ArrayList<Contact> mContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +27,12 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        loadContacts();
+
         //Add fragments
-        vpAdapter.addFragment(new ContactListFragment(), "");
-        vpAdapter.addFragment(new ContactListFragment(), "");
+        vpAdapter.addFragment(ContactListFragment.newInstance(mContacts), "");
+        vpAdapter.addFragment(ContactListFragment.newInstance(mContacts), "");
+
 
         viewPager.setAdapter(vpAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -41,6 +47,15 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
 
 
+    }
+
+    //TODO: Load contacts from device
+    public void loadContacts() {
+        mContacts = new ArrayList<>();
+        mContacts.add(new Contact("Jaime", "503 73033815", false));
+        mContacts.add(new Contact("Jaime", "503 73033815", true));
+        mContacts.add(new Contact("Jaime", "503 73033815", false));
+        mContacts.add(new Contact("Jaime", "503 73033815", false));
     }
 
     @Override

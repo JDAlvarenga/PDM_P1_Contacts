@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/img_contact_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_star_border" />
+
+    <TextView
+        android:id="@+id/txt_contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_contact_favorite"
+
+        android:textSize="16sp"
+        android:textStyle="bold"
+
+        android:text="Jaime Alvarenga"
+        />
+
+    <TextView
+        android:id="@+id/txt_contact_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_contact_name"
+        android:layout_toRightOf="@id/img_contact_favorite"
+
+        android:textSize="16sp"
+
+        android:text="503 73033815"/>
+
+    <ImageView
+        android:id="@+id/img_contact_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_call"/>
+</RelativeLayout>
