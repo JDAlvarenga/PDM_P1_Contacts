@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="#e0e0e0"
+    >
+
+    <com.github.siyamed.shapeimageview.CircularImageView
+        android:id="@+id/img_dialog_picture"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_account_circle"
+        />
+
+    <TextView
+        android:id="@+id/txt_dialog_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:textStyle="bold"
+
+        android:text="Contact Name"/>
+
+    <TextView
+        android:id="@+id/txt_dialog_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+
+
+
+        android:text="Id"/>
+
+    <TextView
+        android:id="@+id/txt_dialog_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+
+
+        android:text="Phone Number"/>
+
+    <TextView
+        android:id="@+id/txt_dialog_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+
+
+        android:text="Address"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+
+
+    <ImageButton
+        android:id="@+id/imgBtn_dialog_call"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_call"/>
+
+    <ImageButton
+        android:id="@+id/imgBtn_dialog_share"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_share"/>
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

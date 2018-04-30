@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:id="@+id/relLay_contact_item">
 
     <ImageView
         android:id="@+id/img_contact_favorite"
