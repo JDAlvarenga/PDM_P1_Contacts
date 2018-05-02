@@ -17,15 +17,20 @@ import java.util.ArrayList;
  * Created by Jaime on 4/29/2018.
  */
 
-public class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdapter.ContactListViewHolder> {
+public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdapter.ContactListViewHolder> {
+
+    public static int IS_FAV_RESOURCE = R.drawable.ic_star;
+    public static int IS_NOT_FAV_RESOURCE = R.drawable.ic_star_border;
 
     private Context mContext;
-    private ArrayList<Contact> contacts;
+    public ArrayList<Contact> contacts;
+    public ArrayList<ContactListViewHolder> holders;
     private Dialog detailsDialog;
 
     public RVContactListAdapter(Context mContext, ArrayList<Contact> contacts) {
         this.mContext = mContext;
         this.contacts = contacts;
+        holders = new ArrayList<>();
     }
 
     @Override
@@ -66,8 +71,32 @@ public class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdap
 
         holder.txt_name.setText(cont.getName() + cont.getLastName());
         holder.txt_number.setText(cont.getNumber());
-        holder.img_favorite.setImageResource(cont.isFavorite()? R.drawable.ic_star : R.drawable.ic_star_border);
+        holder.img_favorite.setImageResource(cont.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
 
+        holder.img_favorite.setOnClickListener(new FavOnClickListener(holder, contacts, position));
+        holders.add(holder);
+
+    }
+
+    public class FavOnClickListener implements View.OnClickListener {
+        ContactListViewHolder holder;
+        ArrayList<Contact> contactList;
+        int position;
+
+        public FavOnClickListener(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
+            this.holder = holder;
+            this.contactList = contactList;
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Contact c = contactList.get(position);
+            c.setFavorite(! c.isFavorite());
+            holder.img_favorite.setImageResource(c.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
+            OnToggleFavorite(holder, contactList, position);
+
+        }
     }
 
     @Override
@@ -77,11 +106,11 @@ public class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdap
 
     public class ContactListViewHolder extends RecyclerView.ViewHolder {
 
-        private View item_contact;
-        private TextView txt_name;
-        private TextView txt_number;
-        private  ImageView img_favorite;
-        private ImageView img_call;
+         View item_contact;
+        TextView txt_name;
+        TextView txt_number;
+        ImageView img_favorite;
+        ImageView img_call;
 
         public ContactListViewHolder(View itemView) {
             super(itemView);
@@ -94,4 +123,21 @@ public class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdap
 
         }
     }
+
+    public void removeContact(int position) {
+        contacts.remove(position);
+        holders.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, contacts.size()+1);
+    }
+
+    public void addContact(Contact c) {
+        contacts.add(c);
+        notifyItemInserted(contacts.size()-2);
+
+    }
+
+
+
+    public abstract void OnToggleFavorite (ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
 }

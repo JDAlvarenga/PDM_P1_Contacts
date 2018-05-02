@@ -27,8 +27,11 @@ public class ContactListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArrayList mContacts;
+    private RVContactListAdapter adapter;
 
-
+    public RVContactListAdapter getAdapter() {
+        return adapter;
+    }
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,19 +70,26 @@ public class ContactListFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragLayout = inflater.inflate(R.layout.fragment_contact_list, container, false);
         recyclerView = fragLayout.findViewById(R.id.contact_list_recyclerView);
-        RVContactListAdapter adapter = new RVContactListAdapter(getContext(), mContacts);
+        adapter = new RVContactListAdapter(getContext(), mContacts) {
+            @Override
+            public void OnToggleFavorite(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
+                /*if(isFavoriteTab) {
+                    contactList.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, contactList.size()+1);
+                }*/
+
+                mListener.OnFavoriteToggle(this, holder, contactList, position);
+            }
+        };
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         return fragLayout;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -110,6 +120,6 @@ public class ContactListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
     }
 }
