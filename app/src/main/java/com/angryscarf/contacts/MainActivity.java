@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     private ContactListFragment allContactsFrag;
     private ContactListFragment favContactsFrag;
 
+    private Contact editing;
+    private RVContactListAdapter editing_adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +113,19 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     }
 
+    @Override
+    public void OnRequestEdit(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position) {
+
+        editing = contactList.get(position);
+        editing_adapter = adapter;
+        Intent addIntent = new Intent(this, EditActivity.class);
+        addIntent.putExtra(EditActivity.EXTRA_CONTACT, editing);
+        startActivityForResult(addIntent, EDIT_CONTACT);
+
+
+    }
+
+
     public void AddContact(View view) {
         Intent addIntent = new Intent(this, EditActivity.class);
         //addIntent.putExtra(EditActivity.EXTRA_CONTACT, new Contact("Dan","73294872",false));
@@ -130,6 +147,27 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
                     }
 
                 }
+                break;
+
+
+            case EDIT_CONTACT:
+                if(resultCode == Activity.RESULT_OK) {
+                    Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
+                    Toast.makeText(this, c.getName()+" "+c.getLastName(), Toast.LENGTH_SHORT).show();
+                    allContactsFrag.getAdapter().updateContact(editing, c);
+                    if(editing.isFavorite()) {
+                        favContactsFrag.getAdapter().updateContact(editing, c);
+                    }
+                    else if(c.isFavorite()){
+                       favContactsFrag.getAdapter().addContact(c);
+                    }
+
+                    editing_adapter.updateDialog(c);
+                }
+                editing = null;
+                editing_adapter = null;
+                break;
         }
     }
+
 }

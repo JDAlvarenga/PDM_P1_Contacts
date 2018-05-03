@@ -81,6 +81,11 @@ public class ContactListFragment extends Fragment {
 
                 mListener.OnFavoriteToggle(this, holder, contactList, position);
             }
+
+            @Override
+            public void OnClickEdit(ArrayList<Contact> contactList, int position) {
+                mListener.OnRequestEdit(this, contactList, position);
+            }
         };
 
 
@@ -121,5 +126,6 @@ public class ContactListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
+        void OnRequestEdit(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
     }
 }

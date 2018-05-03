@@ -26,11 +26,27 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public ArrayList<Contact> contacts;
     public ArrayList<ContactListViewHolder> holders;
     private Dialog detailsDialog;
+    private int selected;
 
-    public RVContactListAdapter(Context mContext, ArrayList<Contact> contacts) {
+
+
+    public RVContactListAdapter(Context mContext, final ArrayList<Contact> contacts) {
         this.mContext = mContext;
         this.contacts = contacts;
         holders = new ArrayList<>();
+        //set-up dialog
+        detailsDialog = new Dialog(mContext);
+        detailsDialog.setContentView(R.layout.dialog_contact_details);
+
+        //ImageView call = detailsDialog.findViewById(R.id.img_dialog_call);
+        //ImageView share = detailsDialog.findViewById(R.id.img_dialog_share);
+        ImageView edit = detailsDialog.findViewById(R.id.img_dialog_edit);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnClickEdit(contacts, selected);
+            }
+        });
     }
 
     @Override
@@ -38,27 +54,19 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         View v = LayoutInflater.from(mContext).inflate(R.layout.item_contact, parent, false);
         final ContactListViewHolder vHolder = new ContactListViewHolder(v);
 
-        //set-up dialog
-        detailsDialog = new Dialog(mContext);
-        detailsDialog.setContentView(R.layout.dialog_contact_details);
+
+
 
         //TODO: Add custom image or default to dialog
         //show dialog on click
         vHolder.item_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextView name = detailsDialog.findViewById(R.id.txt_dialog_name);
-                TextView id = detailsDialog.findViewById(R.id.txt_dialog_id);
-                TextView number = detailsDialog.findViewById(R.id.txt_dialog_number);
-                TextView address = detailsDialog.findViewById(R.id.txt_dialog_address);
-                CircularImageView img = detailsDialog.findViewById(R.id.img_dialog_picture);
 
-                Contact ct = contacts.get(vHolder.getAdapterPosition());
-                name.setText(ct.getName() + " " + ct.getLastName());
-                id.setText(ct.getId());
-                number.setText(ct.getNumber());
-                address.setText(ct.getAddress());
-                img.setImageResource(R.drawable.ic_account_circle);
+                int position = vHolder.getAdapterPosition();
+                selected = position;
+                Contact ct = contacts.get(position);
+                updateDialog(ct);
 
                 detailsDialog.show();
             }
@@ -132,13 +140,46 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         notifyItemRangeChanged(position, contacts.size()+1);
     }
 
+    public void removeContact(Contact c) {
+        int position = contacts.indexOf(c);
+        contacts.remove(position);
+        holders.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, contacts.size()+1);
+    }
+
     public void addContact(Contact c) {
         contacts.add(c);
         notifyItemInserted(contacts.size()-1);
 
     }
 
+    public void updateContact (int position, Contact c) {
+        contacts.set(position, c);
+        notifyItemChanged(position);
+    }
+    public void updateContact (Contact oldC, Contact newC) {
+        int position = contacts.indexOf(oldC);
+        contacts.set(position, newC);
+        notifyItemChanged(position);
+
+    }
+    public void updateDialog(Contact ct) {
+        TextView name = detailsDialog.findViewById(R.id.txt_dialog_name);
+        TextView id = detailsDialog.findViewById(R.id.txt_dialog_id);
+        TextView number = detailsDialog.findViewById(R.id.txt_dialog_number);
+        TextView address = detailsDialog.findViewById(R.id.txt_dialog_address);
+        CircularImageView picture = detailsDialog.findViewById(R.id.img_dialog_picture);
+
+        name.setText(ct.getName() + " " + ct.getLastName());
+        id.setText(ct.getId());
+        number.setText(ct.getNumber());
+        address.setText(ct.getAddress());
+        picture.setImageResource(R.drawable.ic_account_circle);
+    }
+
 
 
     public abstract void OnToggleFavorite (ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
+    public abstract void OnClickEdit (ArrayList<Contact> contactList, int position);
 }

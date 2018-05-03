@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.github.siyamed.shapeimageview.CircularImageView;
@@ -21,6 +22,7 @@ public class EditActivity extends AppCompatActivity {
     private EditText edit_email;
     private EditText edit_address;
     private CircularImageView img_picture;
+    private CheckBox check_favorite;
     private Contact contact;
 
 
@@ -36,21 +38,24 @@ public class EditActivity extends AppCompatActivity {
         edit_email = findViewById(R.id.edit_edit_email);
         edit_address = findViewById(R.id.edit_edit_address);
         img_picture = findViewById(R.id.img_edit_picture);
+        check_favorite = findViewById(R.id.check_edit_favorite);
 
         Intent intent = getIntent();
         contact = intent.hasExtra(EXTRA_CONTACT)? (Contact)intent.getParcelableExtra(EXTRA_CONTACT): (new Contact());
 
-
+        check_favorite.setChecked(contact.isFavorite());
         edit_name.setText(contact.getName());
-        edit_name.setText(contact.getLastName());
-        edit_name.setText(contact.getId());
-        edit_name.setText(contact.getEmail());
-        edit_name.setText(contact.getAddress());
+        edit_lastName.setText(contact.getLastName());
+        edit_phone.setText(contact.getNumber());
+        edit_id.setText(contact.getId());
+        edit_email.setText(contact.getEmail());
+        edit_address.setText(contact.getAddress());
         img_picture.setImageResource(R.drawable.ic_account_circle);
     }
 
     public void saveContact(View view) {
         Contact c = new Contact();
+        contact.setFavorite(check_favorite.isChecked());
         contact.setName(edit_name.getText().toString());
         contact.setLastName(edit_lastName.getText().toString());
         contact.setNumber(edit_phone.getText().toString());

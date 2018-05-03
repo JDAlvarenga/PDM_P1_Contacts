@@ -60,8 +60,8 @@
         >
 
 
-    <ImageButton
-        android:id="@+id/imgBtn_dialog_call"
+    <ImageView
+        android:id="@+id/img_dialog_call"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -69,14 +69,23 @@
 
         android:src="@drawable/ic_call"/>
 
-    <ImageButton
-        android:id="@+id/imgBtn_dialog_share"
+    <ImageView
+        android:id="@+id/img_dialog_share"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="12dp"
 
         android:src="@drawable/ic_dialog_share"/>
+
+        <ImageView
+        android:id="@+id/img_dialog_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_edit"/>
 
 
     </LinearLayout>
