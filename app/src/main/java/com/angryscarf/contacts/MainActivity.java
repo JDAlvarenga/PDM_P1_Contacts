@@ -1,5 +1,7 @@
 package com.angryscarf.contacts;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -8,16 +10,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity  implements ContactListFragment.OnFragmentInteractionListener{
 
+    public static final int EDIT_CONTACT = 1;
+    public static final int ADD_CONTACT = 2;
+
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter vpAdapter;
     private ArrayList<Contact> mContacts;
+    private ContactListFragment allContactsFrag;
+    private ContactListFragment favContactsFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +41,10 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         loadContacts();
 
         //Add fragments
-        vpAdapter.addFragment(ContactListFragment.newInstance(mContacts), "");
-        vpAdapter.addFragment(ContactListFragment.newInstance(filterFavorites(mContacts)), "");
+        allContactsFrag = ContactListFragment.newInstance(mContacts);
+        favContactsFrag = ContactListFragment.newInstance(filterFavorites(mContacts));
+        vpAdapter.addFragment(allContactsFrag, "");
+        vpAdapter.addFragment(favContactsFrag, "");
 
 
         viewPager.setAdapter(vpAdapter);
@@ -96,5 +107,29 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         }
 
+    }
+
+    public void AddContact(View view) {
+        Intent addIntent = new Intent(this, EditActivity.class);
+        //addIntent.putExtra(EditActivity.EXTRA_CONTACT, new Contact("Dan","73294872",false));
+        startActivityForResult(addIntent, ADD_CONTACT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case ADD_CONTACT:
+                if(resultCode == Activity.RESULT_OK) {
+                    Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
+                    Toast.makeText(this, c.getName()+" "+c.getLastName(), Toast.LENGTH_SHORT).show();
+                    allContactsFrag.getAdapter().addContact(c);
+                    if(c.isFavorite()) {
+                        favContactsFrag.getAdapter().addContact(c);
+                    }
+
+                }
+        }
     }
 }

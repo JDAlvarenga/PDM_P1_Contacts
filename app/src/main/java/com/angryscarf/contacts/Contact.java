@@ -11,6 +11,17 @@ public class Contact implements Parcelable {
     private String id, name, lastName, number, email, address, birthDate;
     private boolean favorite;
 
+    public Contact() {
+        this.id = "";
+        this.name = "";
+        this.lastName = "";
+        this.number = "";
+        this.email = "";
+        this.address = "";
+        this.birthDate = "";
+        this.favorite = false;
+    }
+
     public Contact(String name, String number, boolean favorite) {
         this.id = "";
         this.name = name;

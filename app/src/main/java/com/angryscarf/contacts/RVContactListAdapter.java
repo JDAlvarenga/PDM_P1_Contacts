@@ -53,10 +53,11 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
                 TextView address = detailsDialog.findViewById(R.id.txt_dialog_address);
                 CircularImageView img = detailsDialog.findViewById(R.id.img_dialog_picture);
 
-                name.setText(contacts.get(vHolder.getAdapterPosition()).getName());
-                id.setText(contacts.get(vHolder.getAdapterPosition()).getId());
-                number.setText(contacts.get(vHolder.getAdapterPosition()).getNumber());
-                address.setText(contacts.get(vHolder.getAdapterPosition()).getAddress());
+                Contact ct = contacts.get(vHolder.getAdapterPosition());
+                name.setText(ct.getName() + " " + ct.getLastName());
+                id.setText(ct.getId());
+                number.setText(ct.getNumber());
+                address.setText(ct.getAddress());
                 img.setImageResource(R.drawable.ic_account_circle);
 
                 detailsDialog.show();
@@ -69,7 +70,7 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public void onBindViewHolder(ContactListViewHolder holder, int position) {
         Contact cont = contacts.get(position);
 
-        holder.txt_name.setText(cont.getName() + cont.getLastName());
+        holder.txt_name.setText(cont.getName() + " " + cont.getLastName());
         holder.txt_number.setText(cont.getNumber());
         holder.img_favorite.setImageResource(cont.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
 
@@ -133,7 +134,7 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     public void addContact(Contact c) {
         contacts.add(c);
-        notifyItemInserted(contacts.size()-2);
+        notifyItemInserted(contacts.size()-1);
 
     }
 
