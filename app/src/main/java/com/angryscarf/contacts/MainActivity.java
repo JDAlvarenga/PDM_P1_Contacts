@@ -125,6 +125,15 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     }
 
+    @Override
+    public void OnRequestDelete(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position) {
+        Contact c = contactList.get(position);
+        allContactsFrag.getAdapter().removeContact(c);
+        if(c.isFavorite()) {
+            favContactsFrag.getAdapter().removeContact(c);
+        }
+        adapter.closeDialog();
+    }
 
     public void AddContact(View view) {
         Intent addIntent = new Intent(this, EditActivity.class);

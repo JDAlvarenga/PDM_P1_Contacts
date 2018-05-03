@@ -87,6 +87,15 @@
 
         android:src="@drawable/ic_dialog_edit"/>
 
+        <ImageView
+        android:id="@+id/img_dialog_delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_delete"/>
+
 
     </LinearLayout>
 

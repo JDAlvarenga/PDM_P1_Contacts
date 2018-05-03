@@ -47,6 +47,16 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
                 OnClickEdit(contacts, selected);
             }
         });
+
+        ImageView delete = detailsDialog.findViewById(R.id.img_dialog_delete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnClickDelete(contacts, selected);
+            }
+        });
+
+
     }
 
     @Override
@@ -178,8 +188,15 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         picture.setImageResource(R.drawable.ic_account_circle);
     }
 
+    public void closeDialog() {
+        detailsDialog.hide();
+    }
+
 
 
     public abstract void OnToggleFavorite (ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
     public abstract void OnClickEdit (ArrayList<Contact> contactList, int position);
+    public abstract void OnClickDelete (ArrayList<Contact> contactList, int position);
+
+
 }

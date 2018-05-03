@@ -86,6 +86,11 @@ public class ContactListFragment extends Fragment {
             public void OnClickEdit(ArrayList<Contact> contactList, int position) {
                 mListener.OnRequestEdit(this, contactList, position);
             }
+
+            @Override
+            public void OnClickDelete(ArrayList<Contact> contactList, int position) {
+                mListener.OnRequestDelete(this, contactList, position);
+            }
         };
 
 
@@ -127,5 +132,6 @@ public class ContactListFragment extends Fragment {
         // TODO: Update argument type and name
         void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
         void OnRequestEdit(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
+        void OnRequestDelete(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
     }
 }
