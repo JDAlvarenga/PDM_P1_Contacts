@@ -24,7 +24,9 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     private Context mContext;
     public ArrayList<Contact> contacts;
+    private ArrayList<Contact> backup_contacts;
     public ArrayList<ContactListViewHolder> holders;
+    public ArrayList<ContactListViewHolder> backup_holders;
     private Dialog detailsDialog;
     private int selected;
 
@@ -34,6 +36,8 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         this.mContext = mContext;
         this.contacts = contacts;
         holders = new ArrayList<>();
+        backup_holders = new ArrayList<>();
+        backup_contacts = new ArrayList<>();
         //set-up dialog
         detailsDialog = new Dialog(mContext);
         detailsDialog.setContentView(R.layout.dialog_contact_details);
@@ -173,6 +177,7 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         contacts.set(position, newC);
         notifyItemChanged(position);
 
+
     }
     public void updateDialog(Contact ct) {
         TextView name = detailsDialog.findViewById(R.id.txt_dialog_name);
@@ -190,6 +195,35 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     public void closeDialog() {
         detailsDialog.hide();
+    }
+
+    public void filterContacts(String query) {
+
+        contacts.addAll(backup_contacts);
+        backup_contacts.clear();
+
+        for(int i= contacts.size()-1; i>=0; i--) {
+            String regex = "(?i).*"+query+".*";
+            Contact c = contacts.get(i);
+            if(!(c.getName().matches(regex) || c.getLastName().matches(regex))) {
+                backup_contacts.add(c);
+                contacts.remove(i);
+
+                //backup_holders.add(holders.get(i));
+                holders.clear();
+            }
+        }
+
+
+        notifyDataSetChanged();
+    }
+
+    public void noFilterContacts() {
+        contacts.addAll(backup_contacts);
+        backup_contacts.clear();
+        holders.clear();
+
+        notifyDataSetChanged();
     }
 
 

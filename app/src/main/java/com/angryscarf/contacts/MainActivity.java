@@ -1,6 +1,8 @@
 package com.angryscarf.contacts;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
@@ -9,7 +11,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,6 +38,60 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     private Contact editing;
     private RVContactListAdapter editing_adapter;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem =  menu.findItem(R.id.menu_search);
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                ((SearchView)menuItem.getActionView()).setIconified(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                allContactsFrag.getAdapter().noFilterContacts();
+                favContactsFrag.getAdapter().noFilterContacts();
+                menuItem.getActionView().clearFocus();
+
+                return true;
+            }
+        });
+
+
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                allContactsFrag.getAdapter().filterContacts(s);
+                favContactsFrag.getAdapter().filterContacts(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                favContactsFrag.getAdapter().filterContacts(s);
+                allContactsFrag.getAdapter().filterContacts(s);
+                return false;
+            }
+
+        });
+
+
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +131,9 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     public void loadContacts() {
         mContacts = new ArrayList<>();
         mContacts.add(new Contact("Jaime", "503 73033815", false));
-        mContacts.add(new Contact("Jaime", "503 73033815", true));
-        mContacts.add(new Contact("Jaime", "503 73033815", false));
-        mContacts.add(new Contact("Jaime", "503 73033815", false));
+        mContacts.add(new Contact("Tariza", "503 73033815", true));
+        mContacts.add(new Contact("Moe", "503 73033815", false));
+        mContacts.add(new Contact("Jose", "503 73033815", false));
 
     }
 
@@ -137,7 +198,6 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     public void AddContact(View view) {
         Intent addIntent = new Intent(this, EditActivity.class);
-        //addIntent.putExtra(EditActivity.EXTRA_CONTACT, new Contact("Dan","73294872",false));
         startActivityForResult(addIntent, ADD_CONTACT);
     }
 
