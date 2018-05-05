@@ -160,11 +160,13 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
-        outState.putSerializable(STATE_REFERENCE, new StateReference(allContactsFrag, favContactsFrag));
+        if (editing == null) {
+            outState.putSerializable(STATE_REFERENCE, new StateReference(allContactsFrag, favContactsFrag));
+        }
         super.onSaveInstanceState(outState);
     }
 
-    private class StateReference implements Serializable{
+    public class StateReference implements Serializable{
         public ContactListFragment all, fav;
 
         public StateReference(ContactListFragment all, ContactListFragment fav) {
@@ -195,10 +197,8 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     }
 
     @Override
-    public void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
+    public void OnFavoriteToggle(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position) {
         Contact c = contactList.get(position);
-        //RVContactListAdapter allAdapter = ((ContactListFragment)vpAdapter.getItem(0)).getAdapter();
-        //RVContactListAdapter favAdapter = ((ContactListFragment)vpAdapter.getItem(1)).getAdapter();
 
         RVContactListAdapter allAdapter = allContactsFrag.getAdapter();
         RVContactListAdapter favAdapter = favContactsFrag.getAdapter();
@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     public void AddContact(View view) {
         Intent addIntent = new Intent(this, EditActivity.class);
+        editing = new Contact();
         startActivityForResult(addIntent, ADD_CONTACT);
     }
 
@@ -268,6 +269,7 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
                     }
 
                 }
+                editing = null;
                 break;
 
 

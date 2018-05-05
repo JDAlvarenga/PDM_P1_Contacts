@@ -83,14 +83,9 @@ public class ContactListFragment extends Fragment {
 
         adapter = new RVContactListAdapter(getContext(), mContacts) {
             @Override
-            public void OnToggleFavorite(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
-                /*if(isFavoriteTab) {
-                    contactList.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, contactList.size()+1);
-                }*/
+            public void OnToggleFavorite(ArrayList<Contact> contactList, int position) {
 
-                mListener.OnFavoriteToggle(this, holder, contactList, position);
+                mListener.OnFavoriteToggle(this, contactList, position);
             }
 
             @Override
@@ -148,7 +143,7 @@ public class ContactListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
+        void OnFavoriteToggle(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
         void OnRequestEdit(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
         void OnRequestDelete(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
     }

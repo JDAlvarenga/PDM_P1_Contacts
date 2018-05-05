@@ -25,8 +25,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     private Context mContext;
     public ArrayList<Contact> contacts;
     private ArrayList<Contact> backup_contacts;
-    public ArrayList<ContactListViewHolder> holders;
-    public ArrayList<ContactListViewHolder> backup_holders;
     private Dialog detailsDialog;
     private int selected;
 
@@ -35,8 +33,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public RVContactListAdapter(Context mContext, final ArrayList<Contact> contacts) {
         this.mContext = mContext;
         this.contacts = contacts;
-        holders = new ArrayList<>();
-        backup_holders = new ArrayList<>();
         backup_contacts = new ArrayList<>();
         //set-up dialog
         detailsDialog = new Dialog(mContext);
@@ -97,7 +93,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         holder.img_favorite.setImageResource(cont.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
 
         holder.img_favorite.setOnClickListener(new FavOnClickListener(holder, contacts, position));
-        holders.add(holder);
 
     }
 
@@ -117,7 +112,7 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
             Contact c = contactList.get(position);
             c.setFavorite(! c.isFavorite());
             holder.img_favorite.setImageResource(c.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
-            OnToggleFavorite(holder, contactList, position);
+            OnToggleFavorite(contactList, position);
 
         }
     }
@@ -149,7 +144,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     public void removeContact(int position) {
         contacts.remove(position);
-        holders.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, contacts.size()+1);
     }
@@ -157,7 +151,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public void removeContact(Contact c) {
         int position = contacts.indexOf(c);
         contacts.remove(position);
-        holders.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, contacts.size()+1);
     }
@@ -212,8 +205,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
                 backup_contacts.add(c);
                 contacts.remove(i);
 
-                //backup_holders.add(holders.get(i));
-                holders.clear();
             }
         }
 
@@ -224,14 +215,12 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public void noFilterContacts() {
         contacts.addAll(backup_contacts);
         backup_contacts.clear();
-        holders.clear();
-
         notifyDataSetChanged();
     }
 
 
 
-    public abstract void OnToggleFavorite (ContactListViewHolder holder, ArrayList<Contact> contactList, int position);
+    public abstract void OnToggleFavorite (ArrayList<Contact> contactList, int position);
     public abstract void OnClickEdit (ArrayList<Contact> contactList, int position);
     public abstract void OnClickDelete (ArrayList<Contact> contactList, int position);
 
