@@ -28,9 +28,6 @@ import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity  implements ContactListFragment.OnFragmentInteractionListener{
 
-    //State keys
-    public static final String STATE_REFERENCE = "STATE_REFERENCE";
-
     //Intent request keys
     public static final int EDIT_CONTACT = 1;
     public static final int ADD_CONTACT = 2;
@@ -157,24 +154,6 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        if (editing == null) {
-            outState.putSerializable(STATE_REFERENCE, new StateReference(allContactsFrag, favContactsFrag));
-        }
-        super.onSaveInstanceState(outState);
-    }
-
-    public class StateReference implements Serializable{
-        public ContactListFragment all, fav;
-
-        public StateReference(ContactListFragment all, ContactListFragment fav) {
-            this.all = all;
-            this.fav = fav;
-        }
-    }
-
     //TODO: Load contacts from device
     public void loadContacts() {
         mContacts = new ArrayList<>();
@@ -250,7 +229,6 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
     public void AddContact(View view) {
         Intent addIntent = new Intent(this, EditActivity.class);
-        editing = new Contact();
         startActivityForResult(addIntent, ADD_CONTACT);
     }
 
@@ -269,7 +247,6 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
                     }
 
                 }
-                editing = null;
                 break;
 
 
