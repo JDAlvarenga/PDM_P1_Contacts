@@ -26,13 +26,15 @@ public class ContactListFragment extends Fragment {
 
     //State saving keys
     private static final String STATE_CONTACTS = "STATE_CONTACTS";
+    private static final String STATE_SWAP_CONTACTS = "STATE_SWAP_CONTACTS";
 
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_CONTACTS_LIST = "contacts_list";
 
     private RecyclerView recyclerView;
-    private ArrayList mContacts;
+    private ArrayList<Contact> mContacts;
+    private ArrayList<Contact> swap;
     private RVContactListAdapter adapter;
 
     public RVContactListAdapter getAdapter() {
@@ -67,7 +69,9 @@ public class ContactListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mContacts = getArguments().getParcelableArrayList(ARG_CONTACTS_LIST);
+            swap = new ArrayList<>();
         }
+
     }
 
     @Override
@@ -79,9 +83,10 @@ public class ContactListFragment extends Fragment {
 
         if(savedInstanceState != null) {
             mContacts = (ArrayList<Contact>) savedInstanceState.getSerializable(STATE_CONTACTS);
+            swap = (ArrayList<Contact>) savedInstanceState.getSerializable(STATE_SWAP_CONTACTS);
         }
 
-        adapter = new RVContactListAdapter(getContext(), mContacts) {
+        adapter = new RVContactListAdapter(getContext(), mContacts, swap) {
             @Override
             public void OnToggleFavorite(ArrayList<Contact> contactList, int position) {
 
@@ -112,6 +117,7 @@ public class ContactListFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(STATE_CONTACTS, mContacts);
+        outState.putSerializable(STATE_SWAP_CONTACTS, swap);
     }
 
     @Override

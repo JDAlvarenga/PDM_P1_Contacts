@@ -24,16 +24,16 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     private Context mContext;
     public ArrayList<Contact> contacts;
-    private ArrayList<Contact> backup_contacts;
+    private ArrayList<Contact> searchSwap;
     private Dialog detailsDialog;
     private int selected;
 
 
 
-    public RVContactListAdapter(Context mContext, final ArrayList<Contact> contacts) {
+    public RVContactListAdapter(Context mContext, final ArrayList<Contact> contacts, ArrayList<Contact> searchSwap) {
         this.mContext = mContext;
-        this.contacts = contacts;
-        backup_contacts = new ArrayList<>();
+        this.contacts = contacts != null? contacts: new ArrayList<Contact>(contacts);
+        this.searchSwap = searchSwap != null? searchSwap: new ArrayList<Contact>();
         //set-up dialog
         detailsDialog = new Dialog(mContext);
         detailsDialog.setContentView(R.layout.dialog_contact_details);
@@ -195,14 +195,14 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     public void filterContacts(String query) {
 
-        contacts.addAll(backup_contacts);
-        backup_contacts.clear();
+        contacts.addAll(searchSwap);
+        searchSwap.clear();
 
         for(int i= contacts.size()-1; i>=0; i--) {
             String regex = "(?i).*"+query+".*";
             Contact c = contacts.get(i);
             if(!(c.getName().matches(regex) || c.getLastName().matches(regex))) {
-                backup_contacts.add(c);
+                searchSwap.add(c);
                 contacts.remove(i);
 
             }
@@ -213,8 +213,8 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     }
 
     public void noFilterContacts() {
-        contacts.addAll(backup_contacts);
-        backup_contacts.clear();
+        contacts.addAll(searchSwap);
+        searchSwap.clear();
         notifyDataSetChanged();
     }
 
