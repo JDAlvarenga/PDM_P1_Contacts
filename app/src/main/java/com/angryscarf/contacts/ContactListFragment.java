@@ -3,6 +3,7 @@ package com.angryscarf.contacts;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,11 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class ContactListFragment extends Fragment {
+
+    //State saving keys
+    private static final String STATE_CONTACTS = "STATE_CONTACTS";
+
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_CONTACTS_LIST = "contacts_list";
 
@@ -70,6 +76,11 @@ public class ContactListFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragLayout = inflater.inflate(R.layout.fragment_contact_list, container, false);
         recyclerView = fragLayout.findViewById(R.id.contact_list_recyclerView);
+
+        if(savedInstanceState != null) {
+            mContacts = (ArrayList<Contact>) savedInstanceState.getSerializable(STATE_CONTACTS);
+        }
+
         adapter = new RVContactListAdapter(getContext(), mContacts) {
             @Override
             public void OnToggleFavorite(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
@@ -96,10 +107,17 @@ public class ContactListFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
         return fragLayout;
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_CONTACTS, mContacts);
+    }
 
     @Override
     public void onAttach(Context context) {

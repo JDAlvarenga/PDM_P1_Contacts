@@ -3,6 +3,7 @@ package com.angryscarf.contacts;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * Created by Jaime on 4/29/2018.
  */
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Fragment> fragList = new ArrayList<>();
     private ArrayList<String> titleList = new ArrayList<>();

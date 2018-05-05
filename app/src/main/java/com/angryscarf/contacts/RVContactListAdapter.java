@@ -168,6 +168,9 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
 
     }
 
+    public void updateContact (int position) {
+        notifyItemChanged(position);
+    }
     public void updateContact (int position, Contact c) {
         contacts.set(position, c);
         notifyItemChanged(position);

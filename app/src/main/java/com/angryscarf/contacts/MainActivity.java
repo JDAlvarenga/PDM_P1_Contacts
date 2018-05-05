@@ -1,6 +1,9 @@
 package com.angryscarf.contacts;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +22,16 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity  implements ContactListFragment.OnFragmentInteractionListener{
 
+    //State keys
+    public static final String STATE_REFERENCE = "STATE_REFERENCE";
+
+    //Intent request keys
     public static final int EDIT_CONTACT = 1;
     public static final int ADD_CONTACT = 2;
 
@@ -103,13 +111,35 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        //first time loading app
+        if (savedInstanceState == null) {
         loadContacts();
-
-        //Add fragments
+        //Create new fragments
         allContactsFrag = ContactListFragment.newInstance(mContacts);
         favContactsFrag = ContactListFragment.newInstance(filterFavorites(mContacts));
+
         vpAdapter.addFragment(allContactsFrag, "");
         vpAdapter.addFragment(favContactsFrag, "");
+        }
+        else {
+            /*ViewPagerAdapter uses the SupportFragmentManager to handle Fragments but, when activity is recreated (orientation change)
+            * must create another ViewPagerAdapter but Fragments registered in support manager by the adapter are not unregistered so
+            * the previously created fragments are obtained from the manager and reinserted into the adapter.
+            * When inserting duplicated fragments in the manager they are replaced/ignored so that in the end the adapter and manager
+            * have the same registered fragments after recreating the activity.
+            *
+            * NOTE: The fragments handle its own State Restoration procedures.
+            */
+            //Getting the fragments
+            allContactsFrag = (ContactListFragment) getSupportFragmentManager().getFragments().get(0);
+            favContactsFrag = (ContactListFragment) getSupportFragmentManager().getFragments().get(1);
+
+            //adding the fragments to the new adapter
+            vpAdapter.addFragment(allContactsFrag, "");
+            vpAdapter.addFragment(favContactsFrag, "");
+        }
+
+
 
 
         viewPager.setAdapter(vpAdapter);
@@ -125,6 +155,22 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
 
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putSerializable(STATE_REFERENCE, new StateReference(allContactsFrag, favContactsFrag));
+        super.onSaveInstanceState(outState);
+    }
+
+    private class StateReference implements Serializable{
+        public ContactListFragment all, fav;
+
+        public StateReference(ContactListFragment all, ContactListFragment fav) {
+            this.all = all;
+            this.fav = fav;
+        }
     }
 
     //TODO: Load contacts from device
@@ -151,18 +197,24 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     @Override
     public void OnFavoriteToggle(RVContactListAdapter adapter, RVContactListAdapter.ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
         Contact c = contactList.get(position);
-        //Event from favorites tab
-        if(((ContactListFragment)vpAdapter.getItem(1)).getAdapter().equals(adapter)) {
-            adapter.removeContact(position);
+        //RVContactListAdapter allAdapter = ((ContactListFragment)vpAdapter.getItem(0)).getAdapter();
+        //RVContactListAdapter favAdapter = ((ContactListFragment)vpAdapter.getItem(1)).getAdapter();
 
-            RVContactListAdapter allAdapter = ((ContactListFragment)vpAdapter.getItem(0)).getAdapter();
+        RVContactListAdapter allAdapter = allContactsFrag.getAdapter();
+        RVContactListAdapter favAdapter = favContactsFrag.getAdapter();
+        //Event from favorites tab
+        if(favAdapter.equals(adapter)) {
+            favAdapter.removeContact(position);
+
             int i = allAdapter.contacts.indexOf(c);
-            allAdapter.holders.get(i).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
+            allAdapter.updateContact(i);
+            //allAdapter.holders.get(i).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
 
         }
         else {
-            adapter.holders.get(position).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
-            RVContactListAdapter favAdapter = ((ContactListFragment)vpAdapter.getItem(1)).getAdapter();
+            //adapter.holders.get(position).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
+            allAdapter.updateContact(position);
+            //RVContactListAdapter favAdapter = ((ContactListFragment)vpAdapter.getItem(1)).getAdapter();
             if(c.isFavorite()) {
                 favAdapter.addContact(c);
             }
