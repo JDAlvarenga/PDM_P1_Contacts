@@ -107,6 +107,11 @@ public class ContactListFragment extends Fragment {
             public void OnClickCall(ArrayList<Contact> contactList, int position) {
                 mListener.OnRequestCall(contactList.get(position));
             }
+
+            @Override
+            public void OnClickShare(ArrayList<Contact> contactList, int position) {
+                mListener.OnRequestShare(contactList.get(position));
+            }
         };
 
 
@@ -158,5 +163,6 @@ public class ContactListFragment extends Fragment {
         void OnRequestEdit(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
         void OnRequestDelete(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position);
         void OnRequestCall(Contact contact);
+        void OnRequestShare(Contact contact);
     }
 }

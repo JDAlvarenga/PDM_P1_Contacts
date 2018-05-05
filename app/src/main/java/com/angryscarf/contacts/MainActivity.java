@@ -215,11 +215,17 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
             favContactsFrag.getAdapter().removeContact(c);
         }
         adapter.closeDialog();
+        Toast.makeText(this, getResources().getText(R.string.onRemoveSuccessToast)+ " "+c.getName(),Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void OnRequestCall(Contact contact) {
         CallContact(contact);
+    }
+
+    @Override
+    public void OnRequestShare(Contact contact) {
+        ShareContact(contact);
     }
 
     @Override
@@ -230,12 +236,12 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
             case ADD_CONTACT:
                 if (resultCode == Activity.RESULT_OK) {
                     Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
-                    Toast.makeText(this, c.getName() + " " + c.getLastName(), Toast.LENGTH_SHORT).show();
                     allContactsFrag.getAdapter().addContact(c);
                     if (c.isFavorite()) {
                         favContactsFrag.getAdapter().addContact(c);
                     }
 
+                Toast.makeText(this, getResources().getText(R.string.onAddSuccessToast)+ " "+c.getName(),Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -252,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
                     }
 
                     editing_adapter.updateDialog(c);
+                Toast.makeText(this, getResources().getText(R.string.onEditSuccessToast)+ " "+c.getName(),Toast.LENGTH_SHORT).show();
                 }
                 editing = null;
                 editing_adapter = null;
@@ -279,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
                 Contact contact = new Contact();
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                //String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+                boolean favorite = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.STARRED)) == 1;
 
                 //Cursor onto email addresses (get first only)
                 Cursor mailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -299,8 +306,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
                 //TODO: Implement Photo loading
 
                 contact.setName(name);
-                //contact.setEmail(email);
-                //contact.setId(CID);
+                contact.setFavorite(favorite);
 
                 //Has phone numbers
                 if (Integer.parseInt(cur.getString(
@@ -327,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
         cur.close();
     }
 
+    //Dummy Data
     public void loadContacts() {
         mContacts = new ArrayList<>();
         mContacts.add(new Contact("Jaime", "503 73033815", false));
@@ -352,5 +359,24 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
             return;
         }
         startActivity(callIntent);
+    }
+
+    public void ShareContact(Contact contact) {
+
+        String info = contact.getName()+ " "+contact.getLastName() + "\n"+
+                contact.getNumber();
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, info);
+        shareIntent.setType("text/plain");
+
+        if(shareIntent.resolveActivity(getPackageManager()) != null){
+            startActivity(shareIntent);
+        }
+        else{
+            Toast.makeText(this, "Could not find any app to share info",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 }

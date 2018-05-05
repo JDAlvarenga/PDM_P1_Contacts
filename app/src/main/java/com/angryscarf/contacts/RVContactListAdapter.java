@@ -46,7 +46,14 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
             }
         });
 
-        //ImageView share = detailsDialog.findViewById(R.id.img_dialog_share);
+        ImageView share = detailsDialog.findViewById(R.id.img_dialog_share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnClickShare(contacts, selected);
+            }
+        });
+
         ImageView edit = detailsDialog.findViewById(R.id.img_dialog_edit);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,6 +246,6 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public abstract void OnClickEdit (ArrayList<Contact> contactList, int position);
     public abstract void OnClickDelete (ArrayList<Contact> contactList, int position);
     public abstract void OnClickCall (ArrayList<Contact> contactList, int position);
-
+    public abstract void OnClickShare (ArrayList<Contact> contactList, int position);
 
 }
