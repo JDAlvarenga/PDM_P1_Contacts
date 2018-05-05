@@ -38,7 +38,14 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         detailsDialog = new Dialog(mContext);
         detailsDialog.setContentView(R.layout.dialog_contact_details);
 
-        //ImageView call = detailsDialog.findViewById(R.id.img_dialog_call);
+        ImageView call = detailsDialog.findViewById(R.id.img_dialog_call);
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnClickCall(contacts, selected);
+            }
+        });
+
         //ImageView share = detailsDialog.findViewById(R.id.img_dialog_share);
         ImageView edit = detailsDialog.findViewById(R.id.img_dialog_edit);
         edit.setOnClickListener(new View.OnClickListener() {
@@ -92,29 +99,37 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         holder.txt_number.setText(cont.getNumber());
         holder.img_favorite.setImageResource(cont.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
 
-        holder.img_favorite.setOnClickListener(new FavOnClickListener(holder, contacts, position));
+        holder.img_favorite.setOnClickListener(new CustomOnClickListener(holder, contacts, position){
+            @Override
+            public void onClick(View view) {
+                Contact c = contactList.get(position);
+                c.setFavorite(! c.isFavorite());
+                holder.img_favorite.setImageResource(c.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
+                OnToggleFavorite(contactList, position);
+
+            }
+        });
+
+        holder.img_call.setOnClickListener(new CustomOnClickListener(holder, contacts, position){
+            @Override
+            public void onClick(View view) {
+                OnClickCall(this.contactList, this.position);
+            }
+        });
 
     }
 
-    public class FavOnClickListener implements View.OnClickListener {
+    public abstract class CustomOnClickListener implements View.OnClickListener {
         ContactListViewHolder holder;
         ArrayList<Contact> contactList;
         int position;
 
-        public FavOnClickListener(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
+        public CustomOnClickListener(ContactListViewHolder holder, ArrayList<Contact> contactList, int position) {
             this.holder = holder;
             this.contactList = contactList;
             this.position = position;
         }
 
-        @Override
-        public void onClick(View view) {
-            Contact c = contactList.get(position);
-            c.setFavorite(! c.isFavorite());
-            holder.img_favorite.setImageResource(c.isFavorite()? IS_FAV_RESOURCE : IS_NOT_FAV_RESOURCE);
-            OnToggleFavorite(contactList, position);
-
-        }
     }
 
     @Override
@@ -223,6 +238,7 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     public abstract void OnToggleFavorite (ArrayList<Contact> contactList, int position);
     public abstract void OnClickEdit (ArrayList<Contact> contactList, int position);
     public abstract void OnClickDelete (ArrayList<Contact> contactList, int position);
+    public abstract void OnClickCall (ArrayList<Contact> contactList, int position);
 
 
 }

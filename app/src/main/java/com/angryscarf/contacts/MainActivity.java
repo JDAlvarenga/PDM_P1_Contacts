@@ -1,5 +1,7 @@
 package com.angryscarf.contacts;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -8,10 +10,12 @@ import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +33,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class MainActivity extends AppCompatActivity  implements ContactListFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ContactListFragment.OnFragmentInteractionListener {
 
     //Intent request keys
     public static final int EDIT_CONTACT = 1;
@@ -54,12 +58,12 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem =  menu.findItem(R.id.menu_search);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                ((SearchView)menuItem.getActionView()).setIconified(false);
+                ((SearchView) menuItem.getActionView()).setIconified(false);
                 return true;
             }
 
@@ -74,10 +78,8 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         });
 
 
-
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -113,15 +115,14 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         //first time loading app
         if (savedInstanceState == null) {
-        fetchContacts();
-        //Create new fragments
-        allContactsFrag = ContactListFragment.newInstance(mContacts);
-        favContactsFrag = ContactListFragment.newInstance(filterFavorites(mContacts));
+            fetchContacts();
+            //Create new fragments
+            allContactsFrag = ContactListFragment.newInstance(mContacts);
+            favContactsFrag = ContactListFragment.newInstance(filterFavorites(mContacts));
 
-        vpAdapter.addFragment(allContactsFrag, "");
-        vpAdapter.addFragment(favContactsFrag, "");
-        }
-        else {
+            vpAdapter.addFragment(allContactsFrag, "");
+            vpAdapter.addFragment(favContactsFrag, "");
+        } else {
             /*ViewPagerAdapter uses the SupportFragmentManager to handle Fragments but, when activity is recreated (orientation change)
             * must create another ViewPagerAdapter but Fragments registered in support manager by the adapter are not unregistered so
             * the previously created fragments are obtained from the manager and reinserted into the adapter.
@@ -140,8 +141,6 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         }
 
 
-
-
         viewPager.setAdapter(vpAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -154,87 +153,14 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         actionBar.setElevation(0);
 
 
-
     }
 
-    //TODO: Load contacts from device
-    public void fetchContacts() {
 
-        mContacts = new ArrayList<>();
-
-        ContentResolver cr = getContentResolver();
-        //Cursor onto all main contacts
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null , null);
-
-        if (cur.getCount() > 0) {
-            while(cur.moveToNext()) {
-                Contact contact = new Contact();
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                //String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-
-                //Cursor onto email addresses (get first only)
-                Cursor mailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",
-                        new String[]{id}, null);
-
-                while(mailCur.moveToNext()) {
-                    String email = mailCur.getString(mailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-                    contact.setEmail(email);
-                    break;
-                }
-                mailCur.close();
-
-                //String CID = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Identity.CONTACT_ID));
-                //String photo  = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI));
-                //TODO: Implement Photo loading
-
-                contact.setName(name);
-                //contact.setEmail(email);
-                //contact.setId(CID);
-
-                //Has phone numbers
-                if(Integer.parseInt(cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
-                )) > 0){
-
-                    //Cursor onto phone numbers
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "= ?",
-                            new String[]{id}, null);
-                    while(pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        contact.setNumber(phoneNo);
-                        break;//TODO: Implement showing multiple phone numbers
-                    }
-                    pCur.close();
-                }
-
-
-
-                mContacts.add(contact);
-            }
-        }
-        cur.close();
-    }
-
-    public void loadContacts() {
-        mContacts = new ArrayList<>();
-        mContacts.add(new Contact("Jaime", "503 73033815", false));
-        mContacts.add(new Contact("Tarisa", "503 73033815", true));
-        mContacts.add(new Contact("Moe", "503 73033815", false));
-        mContacts.add(new Contact("Jose", "503 73033815", false));
-
-    }
-
-    public ArrayList<Contact> filterFavorites (ArrayList<Contact> contacts) {
+    public ArrayList<Contact> filterFavorites(ArrayList<Contact> contacts) {
         ArrayList<Contact> filtered = new ArrayList<>();
 
-        for(Contact c:contacts) {
-            if(c.isFavorite()) {
+        for (Contact c : contacts) {
+            if (c.isFavorite()) {
                 filtered.add(c);
             }
         }
@@ -248,22 +174,20 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         RVContactListAdapter allAdapter = allContactsFrag.getAdapter();
         RVContactListAdapter favAdapter = favContactsFrag.getAdapter();
         //Event from favorites tab
-        if(favAdapter.equals(adapter)) {
+        if (favAdapter.equals(adapter)) {
             favAdapter.removeContact(position);
 
             int i = allAdapter.contacts.indexOf(c);
             allAdapter.updateContact(i);
             //allAdapter.holders.get(i).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
 
-        }
-        else {
+        } else {
             //adapter.holders.get(position).img_favorite.setImageResource(c.isFavorite()? RVContactListAdapter.IS_FAV_RESOURCE: RVContactListAdapter.IS_NOT_FAV_RESOURCE);
             allAdapter.updateContact(position);
             //RVContactListAdapter favAdapter = ((ContactListFragment)vpAdapter.getItem(1)).getAdapter();
-            if(c.isFavorite()) {
+            if (c.isFavorite()) {
                 favAdapter.addContact(c);
-            }
-            else {
+            } else {
                 favAdapter.removeContact(favAdapter.contacts.indexOf(c));
             }
 
@@ -287,15 +211,15 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     public void OnRequestDelete(RVContactListAdapter adapter, ArrayList<Contact> contactList, int position) {
         Contact c = contactList.get(position);
         allContactsFrag.getAdapter().removeContact(c);
-        if(c.isFavorite()) {
+        if (c.isFavorite()) {
             favContactsFrag.getAdapter().removeContact(c);
         }
         adapter.closeDialog();
     }
 
-    public void AddContact(View view) {
-        Intent addIntent = new Intent(this, EditActivity.class);
-        startActivityForResult(addIntent, ADD_CONTACT);
+    @Override
+    public void OnRequestCall(Contact contact) {
+        CallContact(contact);
     }
 
     @Override
@@ -304,11 +228,11 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         switch (requestCode) {
             case ADD_CONTACT:
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
-                    Toast.makeText(this, c.getName()+" "+c.getLastName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, c.getName() + " " + c.getLastName(), Toast.LENGTH_SHORT).show();
                     allContactsFrag.getAdapter().addContact(c);
-                    if(c.isFavorite()) {
+                    if (c.isFavorite()) {
                         favContactsFrag.getAdapter().addContact(c);
                     }
 
@@ -317,15 +241,14 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
 
             case EDIT_CONTACT:
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
-                    Toast.makeText(this, c.getName()+" "+c.getLastName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, c.getName() + " " + c.getLastName(), Toast.LENGTH_SHORT).show();
                     allContactsFrag.getAdapter().updateContact(editing, c);
-                    if(editing.isFavorite()) {
+                    if (editing.isFavorite()) {
                         favContactsFrag.getAdapter().updateContact(editing, c);
-                    }
-                    else if(c.isFavorite()){
-                       favContactsFrag.getAdapter().addContact(c);
+                    } else if (c.isFavorite()) {
+                        favContactsFrag.getAdapter().addContact(c);
                     }
 
                     editing_adapter.updateDialog(c);
@@ -336,4 +259,98 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
         }
     }
 
+
+    public void AddContact(View view) {
+        Intent addIntent = new Intent(this, EditActivity.class);
+        startActivityForResult(addIntent, ADD_CONTACT);
+    }
+
+    public void fetchContacts() {
+
+        mContacts = new ArrayList<>();
+
+        ContentResolver cr = getContentResolver();
+        //Cursor onto all main contacts
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null, null);
+
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                Contact contact = new Contact();
+                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+
+                //Cursor onto email addresses (get first only)
+                Cursor mailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",
+                        new String[]{id}, null);
+
+                while (mailCur.moveToNext()) {
+                    String email = mailCur.getString(mailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+                    contact.setEmail(email);
+                    break;
+                }
+                mailCur.close();
+
+                //String CID = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Identity.CONTACT_ID));
+                //String photo  = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI));
+                //TODO: Implement Photo loading
+
+                contact.setName(name);
+                //contact.setEmail(email);
+                //contact.setId(CID);
+
+                //Has phone numbers
+                if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
+                )) > 0) {
+
+                    //Cursor onto phone numbers
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "= ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contact.setNumber(phoneNo);
+                        break;//TODO: Implement showing multiple phone numbers
+                    }
+                    pCur.close();
+                }
+
+
+                mContacts.add(contact);
+            }
+        }
+        cur.close();
+    }
+
+    public void loadContacts() {
+        mContacts = new ArrayList<>();
+        mContacts.add(new Contact("Jaime", "503 73033815", false));
+        mContacts.add(new Contact("Tarisa", "503 73033815", true));
+        mContacts.add(new Contact("Moe", "503 73033815", false));
+        mContacts.add(new Contact("Jose", "503 73033815", false));
+
+    }
+
+
+    public void CallContact(Contact contact) {
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + contact.getNumber()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        startActivity(callIntent);
+    }
 }
