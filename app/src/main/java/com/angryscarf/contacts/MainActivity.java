@@ -5,9 +5,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
 
         //first time loading app
         if (savedInstanceState == null) {
-        loadContacts();
+        fetchContacts();
         //Create new fragments
         allContactsFrag = ContactListFragment.newInstance(mContacts);
         favContactsFrag = ContactListFragment.newInstance(filterFavorites(mContacts));
@@ -155,10 +158,73 @@ public class MainActivity extends AppCompatActivity  implements ContactListFragm
     }
 
     //TODO: Load contacts from device
+    public void fetchContacts() {
+
+        mContacts = new ArrayList<>();
+
+        ContentResolver cr = getContentResolver();
+        //Cursor onto all main contacts
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null , null);
+
+        if (cur.getCount() > 0) {
+            while(cur.moveToNext()) {
+                Contact contact = new Contact();
+                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+
+                //Cursor onto email addresses (get first only)
+                Cursor mailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",
+                        new String[]{id}, null);
+
+                while(mailCur.moveToNext()) {
+                    String email = mailCur.getString(mailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+                    contact.setEmail(email);
+                    break;
+                }
+                mailCur.close();
+
+                //String CID = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Identity.CONTACT_ID));
+                //String photo  = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI));
+                //TODO: Implement Photo loading
+
+                contact.setName(name);
+                //contact.setEmail(email);
+                //contact.setId(CID);
+
+                //Has phone numbers
+                if(Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
+                )) > 0){
+
+                    //Cursor onto phone numbers
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "= ?",
+                            new String[]{id}, null);
+                    while(pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contact.setNumber(phoneNo);
+                        break;//TODO: Implement showing multiple phone numbers
+                    }
+                    pCur.close();
+                }
+
+
+
+                mContacts.add(contact);
+            }
+        }
+        cur.close();
+    }
+
     public void loadContacts() {
         mContacts = new ArrayList<>();
         mContacts.add(new Contact("Jaime", "503 73033815", false));
-        mContacts.add(new Contact("Tariza", "503 73033815", true));
+        mContacts.add(new Contact("Tarisa", "503 73033815", true));
         mContacts.add(new Contact("Moe", "503 73033815", false));
         mContacts.add(new Contact("Jose", "503 73033815", false));
 

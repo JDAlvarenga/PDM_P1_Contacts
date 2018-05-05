@@ -147,4 +147,5 @@ public class Contact implements Parcelable {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+
 }
