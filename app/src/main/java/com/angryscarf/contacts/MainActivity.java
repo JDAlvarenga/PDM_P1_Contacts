@@ -231,12 +231,15 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
             case ADD_CONTACT:
                 if (resultCode == Activity.RESULT_OK) {
                     Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
-                    allContactsFrag.getAdapter().addContact(c);
-                    if (c.isFavorite()) {
-                        favContactsFrag.getAdapter().addContact(c);
-                    }
+                    if(!(c.getName() == c.getLastName() && c.getName() == "")){
 
-                Toast.makeText(this, getResources().getText(R.string.onAddSuccessToast)+ " "+c.getName(),Toast.LENGTH_SHORT).show();
+                        allContactsFrag.getAdapter().addContact(c);
+                        if (c.isFavorite()) {
+                            favContactsFrag.getAdapter().addContact(c);
+                        }
+
+                        Toast.makeText(this, getResources().getText(R.string.onAddSuccessToast)+ " "+c.getName(),Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
 
