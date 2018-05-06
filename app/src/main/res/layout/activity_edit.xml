@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp"
+    android:background="@color/colorBackground"
     tools:context="com.angryscarf.contacts.EditActivity">
 
     <ScrollView
@@ -15,8 +15,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
 
 
             <com.github.siyamed.shapeimageview.CircularImageView
@@ -25,27 +30,30 @@
                 android:layout_height="120dp"
                 android:src="@drawable/ic_account_circle"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"/>
-
-            <CheckBox
-                android:id="@+id/check_edit_favorite"
+                />
+            <ImageView
+                android:id="@+id/img_edit_favorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Favorite"/>
+                android:src="@drawable/ic_favorite"
+
+                android:layout_marginTop="8dp" />
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Phone Number"/>
+                android:text="@string/edit_phone_number"/>
 
             <EditText
                 android:id="@+id/edit_edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type last name here"
+                android:hint="@string/edit_phone_hint"
                 android:inputType="phone"/>
 
             <TextView
@@ -53,14 +61,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Name"/>
+                android:text="@string/edit_name"/>
 
             <EditText
                 android:id="@+id/edit_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type name here"
+                android:hint="@string/edit_name_hint"
                 android:inputType="textCapWords"/>
 
             <TextView
@@ -68,14 +76,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Last Name"/>
+                android:text="@string/edit_last_name"/>
 
             <EditText
                 android:id="@+id/edit_edit_lastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type last name here"
+                android:hint="@string/edit_lastname_hint"
                 android:inputType="textCapWords"/>
 
 
@@ -84,14 +92,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="ID"/>
+                android:text="@string/edit_id"/>
 
             <EditText
                 android:id="@+id/edit_edit_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type id here"
+                android:hint="@string/edit_id_hint"
                 android:inputType="textCapWords"/>
 
             <TextView
@@ -99,14 +107,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="E-mail"/>
+                android:text="@string/edit_email"/>
 
             <EditText
                 android:id="@+id/edit_edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type email here"
+                android:hint="@string/edit_email_hint"
                 android:inputType="textEmailAddress"/>
 
             <TextView
@@ -114,14 +122,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Address"/>
+                android:text="@string/edit_address"/>
 
             <EditText
                 android:id="@+id/edit_edit_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Type address here"
+                android:hint="@string/edit_address_hint"
                 android:inputType="textCapSentences"/>
 
 
@@ -133,7 +141,9 @@
         android:id="@+id/btn_edit_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="@string/edit_save_button"
+        android:textColor="@color/primaryTextColor"
+        android:background="@color/primaryLightColor"
         android:layout_gravity="center_horizontal"
         android:onClick="saveContact"/>
 

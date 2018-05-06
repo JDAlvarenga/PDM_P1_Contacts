@@ -1,17 +1,14 @@
 package com.angryscarf.contacts;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
@@ -25,13 +22,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import java.io.Serializable;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity implements ContactListFragment.OnFragmentInteractionListener {
 
@@ -146,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
 
         //set icons
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_contacts);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_tabs_favorite);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_favorite);
 
         //remove shadow from action bar (did)
         ActionBar actionBar = getSupportActionBar();
@@ -249,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
             case EDIT_CONTACT:
                 if (resultCode == Activity.RESULT_OK) {
                     Contact c = data.getParcelableExtra(EditActivity.EXTRA_CONTACT);
-                    Toast.makeText(this, c.getName() + " " + c.getLastName(), Toast.LENGTH_SHORT).show();
                     allContactsFrag.getAdapter().updateContact(editing, c);
                     if (editing.isFavorite()) {
                         favContactsFrag.getAdapter().updateContact(editing, c);
@@ -287,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 boolean favorite = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.STARRED)) == 1;
+
 
                 //Cursor onto email addresses (get first only)
                 Cursor mailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -363,8 +358,11 @@ public class MainActivity extends AppCompatActivity implements ContactListFragme
 
     public void ShareContact(Contact contact) {
 
-        String info = contact.getName()+ " "+contact.getLastName() + "\n"+
-                contact.getNumber();
+        String info = contact.getName()+ " "+contact.getLastName();
+        if(contact.getNumber() != ""){info += ("\n"+ contact.getNumber());}
+        if(contact.getEmail() != ""){info += ("\n"+ contact.getEmail());}
+        if(contact.getAddress() != ""){info += ("\n"+ contact.getAddress());}
+
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, info);

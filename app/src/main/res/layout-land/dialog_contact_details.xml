@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dp"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@color/primaryLightColor"
+    android:padding="16dp"
+    >
+
+    <LinearLayout
+        android:id="@+id/container_dialog_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/img_dialog_picture"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_account_circle"
+            />
+
+        <ScrollView
+            android:id="@+id/scroll_dialog_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_gravity="center"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txt_dialog_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+
+                    android:text="Contact Name"/>
+
+                <TextView
+                    android:id="@+id/txt_dialog_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="20dp"
+                    android:textColor="@color/secondaryTextColor"
+
+
+                    android:text="Phone Number"/>
+
+                <TextView
+                    android:id="@+id/txt_dialog_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="20dp"
+                    android:textColor="@color/secondaryTextColor"
+
+
+                    android:text="Id"/>
+
+
+                <TextView
+                    android:id="@+id/txt_dialog_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="20dp"
+                    android:textColor="@color/secondaryTextColor"
+
+
+                    android:text="Email"/>
+
+                <TextView
+                    android:id="@+id/txt_dialog_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="20dp"
+                    android:textColor="@color/secondaryTextColor"
+
+
+                    android:text="Address"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@id/container_dialog_contact"
+        android:layout_centerHorizontal="true"
+        >
+
+
+    <ImageView
+        android:id="@+id/img_dialog_call"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_call"/>
+
+    <ImageView
+        android:id="@+id/img_dialog_share"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_share"/>
+
+        <ImageView
+        android:id="@+id/img_dialog_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_edit"/>
+
+        <ImageView
+        android:id="@+id/img_dialog_delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="12dp"
+
+        android:src="@drawable/ic_dialog_delete"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

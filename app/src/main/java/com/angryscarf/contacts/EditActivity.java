@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.github.siyamed.shapeimageview.CircularImageView;
 
 public class EditActivity extends AppCompatActivity {
 
     public static final String EXTRA_CONTACT = "com.angryscarf.contacts.EXTRA_CONTACT";
+
+    public static int R_FAVORITE = R.drawable.ic_favorite;
+    public static int R_NO_FAVORITE = R.drawable.ic_favorite_border;
 
     private EditText edit_name;
     private EditText edit_lastName;
@@ -22,12 +26,13 @@ public class EditActivity extends AppCompatActivity {
     private EditText edit_email;
     private EditText edit_address;
     private CircularImageView img_picture;
-    private CheckBox check_favorite;
+    private ImageView img_favorite;
     private Contact contact;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
@@ -38,12 +43,19 @@ public class EditActivity extends AppCompatActivity {
         edit_email = findViewById(R.id.edit_edit_email);
         edit_address = findViewById(R.id.edit_edit_address);
         img_picture = findViewById(R.id.img_edit_picture);
-        check_favorite = findViewById(R.id.check_edit_favorite);
+        img_favorite = findViewById(R.id.img_edit_favorite);
 
         Intent intent = getIntent();
         contact = intent.hasExtra(EXTRA_CONTACT)? (Contact)intent.getParcelableExtra(EXTRA_CONTACT): (new Contact());
 
-        check_favorite.setChecked(contact.isFavorite());
+        img_favorite.setImageResource(contact.isFavorite()?R_FAVORITE:R_NO_FAVORITE);
+        img_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                contact.setFavorite(!contact.isFavorite());
+                img_favorite.setImageResource(contact.isFavorite()?R_FAVORITE:R_NO_FAVORITE);
+            }
+        });
         edit_name.setText(contact.getName());
         edit_lastName.setText(contact.getLastName());
         edit_phone.setText(contact.getNumber());
@@ -55,7 +67,7 @@ public class EditActivity extends AppCompatActivity {
 
     public void saveContact(View view) {
         Contact c = new Contact();
-        contact.setFavorite(check_favorite.isChecked());
+        //Favorite is set on click
         contact.setName(edit_name.getText().toString());
         contact.setLastName(edit_lastName.getText().toString());
         contact.setNumber(edit_phone.getText().toString());

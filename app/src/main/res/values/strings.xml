@@ -6,6 +6,19 @@
     <string name="onEditSuccessToast">Edited</string>
     <string name="onAddSuccessToast">Added</string>
     <string name="onRemoveSuccessToast">Removed</string>
+    <string name="edit_phone_number">Phone Number</string>
+    <string name="edit_name">Name</string>
+    <string name="edit_last_name">Last Name</string>
+    <string name="edit_id">ID</string>
+    <string name="edit_email">E-mail</string>
+    <string name="edit_address">Address</string>
+    <string name="edit_phone_hint">Type phone number  here</string>
+    <string name="edit_name_hint">Type name here</string>
+    <string name="edit_lastname_hint">Type last name here</string>
+    <string name="edit_id_hint">Type id here</string>
+    <string name="edit_email_hint">Type email here</string>
+    <string name="edit_address_hint">Type address here</string>
+    <string name="edit_save_button">Save</string>
 
 
 </resources>

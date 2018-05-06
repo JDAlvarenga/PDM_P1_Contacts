@@ -2,10 +2,14 @@ package com.angryscarf.contacts;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +23,8 @@ import java.util.ArrayList;
 
 public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContactListAdapter.ContactListViewHolder> {
 
-    public static int IS_FAV_RESOURCE = R.drawable.ic_star;
-    public static int IS_NOT_FAV_RESOURCE = R.drawable.ic_star_border;
+    public static int IS_FAV_RESOURCE = R.drawable.ic_favorite;
+    public static int IS_NOT_FAV_RESOURCE = R.drawable.ic_favorite_border;
 
     private Context mContext;
     public ArrayList<Contact> contacts;
@@ -36,7 +40,12 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
         this.searchSwap = searchSwap != null? searchSwap: new ArrayList<Contact>();
         //set-up dialog
         detailsDialog = new Dialog(mContext);
+        detailsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         detailsDialog.setContentView(R.layout.dialog_contact_details);
+        Window window = detailsDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
 
         ImageView call = detailsDialog.findViewById(R.id.img_dialog_call);
         call.setOnClickListener(new View.OnClickListener() {
@@ -199,15 +208,18 @@ public abstract class RVContactListAdapter extends RecyclerView.Adapter<RVContac
     }
     public void updateDialog(Contact ct) {
         TextView name = detailsDialog.findViewById(R.id.txt_dialog_name);
-        TextView id = detailsDialog.findViewById(R.id.txt_dialog_id);
         TextView number = detailsDialog.findViewById(R.id.txt_dialog_number);
+        TextView id = detailsDialog.findViewById(R.id.txt_dialog_id);
+        TextView email = detailsDialog.findViewById(R.id.txt_dialog_email);
         TextView address = detailsDialog.findViewById(R.id.txt_dialog_address);
         CircularImageView picture = detailsDialog.findViewById(R.id.img_dialog_picture);
 
         name.setText(ct.getName() + " " + ct.getLastName());
-        id.setText(ct.getId());
         number.setText(ct.getNumber());
+        id.setText(ct.getId());
+        email.setText(ct.getEmail());
         address.setText(ct.getAddress());
+        //TODO: Update Image to saved in contact
         picture.setImageResource(R.drawable.ic_account_circle);
     }
 
