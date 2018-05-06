@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Contactos</string>
+    <string name="onEditSuccessToast">Modificado</string>
+    <string name="onAddSuccessToast">Agregado</string>
+    <string name="onRemoveSuccessToast">Eliminado</string>
+    <string name="edit_phone_number">Teléfono</string>
+    <string name="edit_name">Nombre</string>
+    <string name="edit_last_name">Apellido</string>
+    <string name="edit_id">ID</string>
+    <string name="edit_email">Correo Electrónico</string>
+    <string name="edit_address">Dirección</string>
+    <string name="edit_phone_hint">Ingrese número telefónico</string>
+    <string name="edit_name_hint">Ingrese nombre</string>
+    <string name="edit_lastname_hint">Ingrese apellido</string>
+    <string name="edit_id_hint">Ingrese ID</string>
+    <string name="edit_email_hint">Ingrese correo electrónico</string>
+    <string name="edit_address_hint">Ingrese dirección</string>
+    <string name="edit_save_button">Guardar</string>
+
+</resources>

@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Contacts</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="onEditSuccessToast">Edited</string>
     <string name="onAddSuccessToast">Added</string>
     <string name="onRemoveSuccessToast">Removed</string>
